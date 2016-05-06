@@ -1,9 +1,8 @@
 #!/bin/sh
-wget --no-check-certificate https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json -O chinanet.json
-if [ ! -d '/jffs/configs/dnsmasq.d' ];then
-mkdir -p /jffs/configs/dnsmasq.d
-[ $? != 0 ] && echo "error!exitting..";exit 1
+if [ ! -d "/jffs/configs/dnsmasq.d" ];then
+mkdir -p /jffs/configs/dnsmasq.d/
 fi
+wget --no-check-certificate https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json -O chinanet.json
 avgcompare(){
   for ip_addr in $*
   do
@@ -35,6 +34,6 @@ avgcompare $ip_addrs
 dnsmasq $domains
 done
 cat /jffs/configs/dnsmasq.d/apple.conf
-rm -rf chinanet.json
-[ `grep "conf-dir=/jffs/configs/dnsmasq.d" /jffs/configs/dnsmasq.conf.add |wc -l` -lt 1 ] && echo "conf-dir=/jffs/configs/dnsmasq.d" >>/jffs/configs/dnsmasq.conf.add
+rm -rf chinanet.json                  
+echo "conf-dir=/jffs/configs/dnsmasq.d" >> /jffs/configs/dnsmasq.conf.add
 service restart_dnsmasq
