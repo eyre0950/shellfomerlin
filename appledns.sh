@@ -20,6 +20,7 @@ avgcompare(){
 dnsmasq(){
 for domain in $*
 do
+if [ "$domain" != "" ]
 echo "address=/$domain/$ip_addr_sel" >>/jffs/configs/dnsmasq.d/apple.conf
 done
 }
@@ -34,6 +35,7 @@ avgcompare $ip_addrs
 dnsmasq $domains
 done
 cat /jffs/configs/dnsmasq.d/apple.conf
-rm -rf chinanet.json                  
+rm -rf chinanet.json 
+wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore |awk '{if( /^a/) {print "address=/"$1".phobos.apple.com""/"$4"" }}'
 echo "conf-dir=/jffs/configs/dnsmasq.d" >> /jffs/configs/dnsmasq.conf.add
 service restart_dnsmasq
