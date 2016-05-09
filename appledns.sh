@@ -22,6 +22,7 @@ for domain in $*
 do
 if [ "$domain" != "" ];then
 echo "address=/$domain/$ip_addr_sel" >>/jffs/configs/dnsmasq.d/apple.conf
+fi
 done
 }
 for i in 3 7 11 15 19
