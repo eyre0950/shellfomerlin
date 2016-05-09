@@ -1,0 +1,106 @@
+#!/bin/sh
+
+file='/jffs/scripts/services-start'
+
+show_help()
+{
+cat <<EOF
+
+Usage: led
+
+Time control LEDs	led t starttime endtime(only hours)
+start			led start
+clean			led clean
+off			led off
+
+EOF
+}
+
+led()
+{
+    hh=$(date +%H)
+    set_flags=` cat $file |grep "#$(basename $0)#\$" |wc -l `
+    stime=`cat $file |awk '/#'$(basename $0)'#/ {split($5,a,",");print a[1]}'`
+    etime=`cat $file |awk '/#'$(basename $0)'#/ {split($5,a,",");print a[2]}'`
+    if [ "$stime" = "" -o "$etime" = "" ];then
+    echo "Please set time to led control"
+    exit 1
+    fi
+    if [ $set_flags -ge 1 ] && [ $stime -lt $etime ]
+    then
+    {
+       if [ $hh -lt $etime ] && [ $hh -ge $stime ]
+       then
+       {
+       nvram set led_disable=0
+       echo  "Leds will turn on.."
+       }
+       else
+       {
+       nvram set led_disable=1
+       echo  "Leds will turn off.."
+       }
+       fi
+    }
+   fi
+   if [ $set_flags -ge 1 ] && [ $stime -gt $etime ]
+   then
+   {
+      if [ $hh -ge $stime ] || [ $hh -lt $etime ]
+       then
+       {
+       nvram set led_disable=0
+       echo  "Leds will turn on.."
+       }
+       else
+       {
+       nvram set led_disable=1
+       echo  "Leds will turn off.."
+       }
+       fi
+
+   }
+   fi
+  nvram commit
+  service restart_leds
+}
+case $1 in
+  t)
+  if [ "$2" != "" ] && [ "$3" != "" ] && [ "`echo $2|sed 's/[0-9]//g'`" = "" ] && [ $2 -ge 0 ] && [ $2 -le 23 ] && \
+	[ "`echo $3|sed 's/[0-9]//g'`" = "" ] && [ $3 -ge 0 ] && [ $3 -le 23 ]
+	then
+    {
+      dtime=$2,$3
+      $(dirname $(readlink -f $0))/bootentry i $(basename $0 ) "cru a $(basename $0 ) \"0 $dtime * * * "$(dirname $(readlink -f $0))/$(basename $0) start"\""
+      cru a $(basename $0 ) "0 $dtime * * * "$(dirname $(readlink -f $0))/$(basename $0) start""
+      led
+    }
+	else
+    {
+        echo "Wrong,Please set time in 0-23!"
+    }
+  fi
+	;;
+  start)
+  led
+  ;;
+  clean)
+  sed -i "/#$(basename $0)#/d" $file
+  cru d $(basename $0)
+  nvram set led_disable=0
+  nvram commit
+  service restart_leds
+  echo "Timer task has been closed,Leds is always open"
+  ;;
+  off)
+  sed -i "/#$(basename $0)#/d" $file
+  cru d $(basename $0)
+  nvram set led_disable=1
+  nvram commit
+  service restart_leds
+  echo "Timer task has been closed,Leds is always close"
+  ;;
+  *)
+  show_help
+  ;;
+esac
