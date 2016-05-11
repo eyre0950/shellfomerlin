@@ -20,7 +20,7 @@ avgcompare(){
 dnsmasq(){
 for domain in $*
 do
-if [ "$domain" != "" ];then
+if [ "$domain" != "itunes.apple.com" ];then
 echo "address=/$domain/$ip_addr_sel" >>/jffs/configs/dnsmasq.d/apple.conf
 fi
 done
