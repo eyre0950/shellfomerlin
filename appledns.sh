@@ -38,5 +38,5 @@ done
 cat /jffs/configs/dnsmasq.d/apple.conf
 rm -rf chinanet.json 
 wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore |awk '{if( /^a/) {print "address=/"$1".phobos.apple.com""/"$4"" }}' >>/jffs/configs/dnsmasq.d/apple.conf
-echo "conf-dir=/jffs/configs/dnsmasq.d" >> /jffs/configs/dnsmasq.conf.add
+echo "conf-dir=/jffs/configs/dnsmasq.d/" >> /jffs/configs/dnsmasq.conf.add
 service restart_dnsmasq
