@@ -39,7 +39,5 @@ dnsmasq $domains
 done
 cat /jffs/configs/dnsmasq.d/apple.conf
 rm -rf chinanet.json 
-wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/ {print "address=/phobos.apple.com/"$4 }' >>/jffs/configs/dnsmasq.d/apple.conf
-awk '!a[$0]++' /jffs/configs/dnsmasq.d/apple.conf >>/jffs/configs/dnsmasq.d/apple.conf.bak
-mv /jffs/configs/dnsmasq.d/apple.conf.bak /jffs/configs/dnsmasq.d/apple.conf 
+wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/{print "address=/phobos.apple.com/"$4 }' |awk '!a[$0]++' >>/jffs/configs/dnsmasq.d/apple.conf
 service restart_dnsmasq
