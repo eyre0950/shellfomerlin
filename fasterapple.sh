@@ -46,14 +46,16 @@ domains=`awk '{printf $0}' chinanet.json |awk -F'[][]' '{print '$dm'}' |sed 's/\
 ip_addrs=`awk '{printf $0}' chinanet.json |awk -F'[][]' '{print '$ia'}' |sed 's/\"//g;s/ //g;s/,/ /g;s/\:443//g'`
 speed_test "$ip_addrs" "$domains"
 done
+:<<!
 printf "Configure Appstore download rules"
-wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/{print "address=/phobos.apple.com/"$4 }' |awk '!a[$0]++' >>/jffs/configs/dnsmasq.d/apple.conf &
+wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/{print "address=/.phobos.apple.com/"$4 }' |awk '!a[$0]++' >>/jffs/configs/dnsmasq.d/apple.conf &
 while [ `ps |grep wget |grep -v "grep" |wc -l` -ge 1 ]                                                                            
 do                                                                                                                                
 printf "."                                                                                                                        
 sleep 1                                                                                                                           
 done                                                                                                                    
 printf "\n"
+!
 cat /jffs/configs/dnsmasq.d/apple.conf
 rm -rf chinanet.json
 if [ `grep "conf-dir=/jffs/configs/dnsmasq.d" /jffs/configs/dnsmasq.conf.add |wc -l` -lt 1 ];then
