@@ -1,4 +1,5 @@
 #!/bin/sh
+
 speed_test(){
 file='.fastapple'
 for ip_addr in $1
