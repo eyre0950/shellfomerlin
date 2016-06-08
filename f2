@@ -25,5 +25,5 @@ sed -i '/float/ihttp-proxy \$dnsname 8888' /etc/openvpn/server1/client.ovpn
 EOF
 
 #start nvpproxy
-iptables -I INPUT 7 -p tcp -m tcp --dport 8888 -j ACCEPT
 ./nvpproxy -port=8888 -proxy=127.0.0.1:1194 &
+iptables -I INPUT -p tcp -m tcp --dport 8888 -j ACCEPT
