@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#no nvpurl,waitting...
 cd /jffs
 #download npvproxy
 npvurl=''
@@ -13,7 +13,7 @@ done
 printf "success!\n"
 #CMCC data
 
-cat > /jffs/scripts/openvpn-event1 <<EOF
+cat > /jffs/scripts/openvpn-event <<EOF
 #!/bin/sh
 dnsname=\`nvram get ddns_hostname_x\`
 sed -i '/remote/d' /etc/openvpn/server1/client.ovpn
