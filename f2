@@ -1,5 +1,6 @@
 #!/bin/sh
 #no nvpurl,waitting...
+:<<!
 cd /jffs
 #download npvproxy
 npvurl=''
@@ -27,3 +28,5 @@ EOF
 #start nvpproxy
 ./nvpproxy -port=8888 -proxy=127.0.0.1:1194 &
 iptables -I INPUT -p tcp -m tcp --dport 8888 -j ACCEPT
+!
+echo "waitting...,It's not OK now!"
