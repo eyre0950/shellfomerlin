@@ -1,0 +1,29 @@
+#!/bin/sh
+
+cd /jffs
+#download npvproxy
+npvurl=''
+printf "Donwloading npvproxy"
+wget --no-check-certificate -qO -$npurl &
+while [ `ps |grep wget |grep -v "grep" |wc -l` -ge 1 ]
+do
+printf "."
+sleep 1
+done
+printf "success!\n"
+#CMCC data
+
+cat > /jffs/scripts/openvpn-event1 <<EOF
+#!/bin/sh
+dnsname=\`nvram get ddns_hostname_x\`
+sed -i '/remote/d' /etc/openvpn/server1/client.ovpn
+sed -i '/float/iremote wap.10086.cn 80' /etc/openvpn/server1/client.ovpn
+sed -i '/float/ihttp-proxy-option EXT1 POST http://wap.10086.cn' /etc/openvpn/server1/client.ovpn
+sed -i '/float/ihttp-proxy-option EXT1 Host wap.10086.cn' /etc/openvpn/server1/client.ovpn
+sed -i '/float/ihttp-proxy-option EXT1 Host: wap.10086.cn / HTTP/1.1' /etc/openvpn/server1/client.ovpn
+sed -i '/float/ihttp-proxy \$dnsname 8888' /etc/openvpn/server1/client.ovpn
+EOF
+
+#start nvpproxy
+iptables -I INPUT 7 -p tcp -m tcp --dport 8888 -j ACCEPT
+./nvpproxy -port=8888 -proxy=127.0.0.1:1194 &
