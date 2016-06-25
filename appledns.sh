@@ -2,7 +2,24 @@
 if [ ! -d "/jffs/configs/dnsmasq.d" ];then
 mkdir -p /jffs/configs/dnsmasq.d/
 fi
-wget --no-check-certificate https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json -O chinanet.json
+case `curl -s ip.cn |awk '{print $NF}'` in
+"电信")
+urls='https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json'
+;;
+"移动")
+urls='https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/CMCC.json'
+;;
+"联通")
+urls='https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaUnicom.json'
+;;
+*)
+echo "No CDN json file,exitting..."
+exit 1
+;;
+esac
+echo "Downloading $urls..."
+wget --no-check-certificate -q $urls -O cdn.json
+#wget --no-check-certificate https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json -O chinanet.json
 avgcompare(){
   for ip_addr in $*
   do
@@ -36,8 +53,8 @@ for i in 3 7 11 15 19
 do
 eval dm='\$'$i''
 eval ia='\$'$((i+2))''
-domains=`awk '{printf $0}' chinanet.json |awk -F'[][]' '{print '$dm'}' |sed 's/\"//g;s/ //g;s/,/ /g'`
-ip_addrs=`awk '{printf $0}' chinanet.json |awk -F'[][]' '{print '$ia'}' |sed 's/\"//g;s/ //g;s/,/ /g'`
+domains=`awk '{printf $0}' cdn.json |awk -F'[][]' '{print '$dm'}' |sed 's/\"//g;s/ //g;s/,/ /g'`
+ip_addrs=`awk '{printf $0}' cdn.json |awk -F'[][]' '{print '$ia'}' |sed 's/\"//g;s/ //g;s/,/ /g'`
 compare=10000000
 avgcompare $ip_addrs
 dnsmasq $domains
