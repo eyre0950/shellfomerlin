@@ -35,8 +35,8 @@ ip_addr_sel=""
 }
 #main
 
-wan_ipaddr=`ifconfig ppp0 |awk -F'[: ]' '/inet/{print $14}'`
-case `curl -s ip.cn?ip=$wan_ipaddr |awk '/^IP/{print $NF}'` in
+#wan_ipaddr=`ifconfig ppp0 |awk -F'[: ]' '/inet/{print $14}'`
+case `curl -s ip.cn |awk '{print $NF}'` in
 "电信")
 urls='https://raw.githubusercontent.com/gongjianhui/AppleDNS/master/ChinaNet.json'
 ;;
