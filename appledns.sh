@@ -60,7 +60,7 @@ avgcompare $ip_addrs
 dnsmasq $domains
 done
 cat /jffs/configs/dnsmasq.d/apple.conf
-rm -rf chinanet.json 
-wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/{print "address=/phobos.apple.com/"$4 }' |awk '!a[$0]++' >>/jffs/configs/dnsmasq.d/apple.conf
+rm -rf cdn.json 
+#wget --no-check-certificate -qO - https://raw.githubusercontent.com/FasterApple/fasterapple/master/db/appstore | awk '/^a/{print "address=/phobos.apple.com/"$4 }' |awk '!a[$0]++' >>/jffs/configs/dnsmasq.d/apple.conf
 [ `grep "conf-dir=/jffs/configs/dnsmasq.d" /jffs/configs/dnsmasq.conf.add |wc -l` -eq 0 ] && echo "conf-dir=/jffs/configs/dnsmasq.d" >>/jffs/configs/dnsmasq.conf.add
 service restart_dnsmasq
